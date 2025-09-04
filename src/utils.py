@@ -52,11 +52,35 @@ def distribution_state_manager(model):
 
 
 def clean_text(text):
-    pattern = r'^\s*(?:```|~~~)\s*json\s*\n(.*?)\n\s*(?:```|~~~)\s*$'
-    match = re.search(pattern, text, re.DOTALL | re.MULTILINE)
-    
-    if match:
-        json_str =  match.group(1)
-        json_str = re.sub(r'\s+', ' ', json_str.strip())
-        json_str = json_str.replace('\\', '\\\\')
-        return json.loads(json_str)
+    try:
+        json.loads(text)
+        return text
+    except json.JSONDecodeError:
+        pattern = r'^\s*(?:```|~~~)\s*json\s*\n(.*?)\n\s*(?:```|~~~)\s*$'
+        match = re.search(pattern, text, re.DOTALL | re.MULTILINE)
+        
+        if match:
+            json_str =  match.group(1)
+            json_str = re.sub(r'\s+', ' ', json_str.strip())
+            json_str = json_str.replace('\\', '\\\\')
+            return json.loads(json_str)
+
+
+def split_list(lst, n):
+    """
+    将列表 lst 随机打乱后，等分成 n 个子列表。
+    如果无法完全等分，前面的子列表会多一个元素。
+    """
+
+    # 计算每个子列表的长度
+    avg = len(lst) / n
+    result = []
+    last = 0.0
+
+    while last < len(lst):
+        # 计算当前子列表的结束索引
+        idx = round(last + avg)
+        result.append(lst[int(last):idx])
+        last = idx
+
+    return result

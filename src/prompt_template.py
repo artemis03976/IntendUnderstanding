@@ -1,74 +1,5 @@
-system_instruction = (
-    '你是一位正在测试一款由语音控制的智能手机云台/支架的用户。你的任务是发出各种指令来调整手机的位置和角度。请你用多样化的、自然的中文口语说出这些指令。'
-)
+import os
 
-user_instruction = (
-    '请模仿以下示例的风格和多样性，为“{action}”这个意图，生成100条不同的、自然的口语指令，并以JSON格式返回。\n'
-    '# [重要要求]：为了确保生成结果的丰富性，请确保你的指令均衡地包含但不限于以下几种类型：\n'
-    '1.  **直接命令式:** 简单直接的指令。 (例如：“向右挪”)\n'
-    '2.  **抱怨/描述问题式:** 通过描述当前画面的问题来表达意图。 (例如：“构图太偏左了”)\n'
-    '3.  **温和请求式:** 使用礼貌用语或疑问句。 (例如：“麻烦帮我往右边调一下好吗？”)\n'
-    '4.  **带有口头禅或无意义词的:** 模仿真实说话习惯，加入停顿或口头语。 (例如：“呃，那个，让它往前边再走走”)\n\n'
-    '# 示例:\n'
-    '[\n'
-    '   {{"text": "{example_1}"}},\n'
-    '   {{"text": "{example_2}"}},\n'
-    '   {{"text": "{example_3}"}},\n'
-    '   {{"text": "{example_4}"}},\n'
-    ']\n'
-    '# 现在请开始为“{action}”生成:'
-)
-
-system_instruction_oos = (
-    '你是一位正在测试一款由语音控制的智能手机云台/支架的用户。但你现在并不想去控制它，而是在进行一些日常对话、自言自语或思考。你的目标是生成这些非指令的、自然的口语内容。'
-)
-
-user_instruction_oos = (
-    '请模仿以下示例的风格和多样性，为“OOS (非指令)”这个类别，生成150条不同的、自然的口语句子，并以JSON格式返回。\n\n'
-    '# 内容类型要求\n'
-    '# [重要要求]为了确保数据的挑战性和多样性，请确保你的回答中均衡地包含但不限于以下几种类型：\n'
-    '1.  **完全无关的日常对话:** 和控制设备毫无关系的闲聊、提问或感叹。(例如：“今天天气怎么样？”或者“晚饭吃什么？”)\n'
-    '2.  **包含指令关键词但意图错误 (最重要):** 这类句子包含了“上、下、左、右、前、后、转、动”等词，但实际意图并非控制设备。这对于防止误触发至关重要。(例如：“我把头向左转了一下”或者“你右边那本书能递给我吗？”)\n'
-    '3.  **模糊不清或无意义的语音:** 模仿自动语音识别（ASR）可能出现的错误结果，或者人类说话时的停顿、口吃和修正。(例如：“嗯那个这个……”或者“我想让它往...哦不对”)\n'
-    '4.  **描述状态而非指令:** 描述设备当前的状态，而不是发出改变状态的指令。(例如：“现在的位置挺好的”或者“它好像有点歪了”)\n\n'
-    '# 格式要求\n'
-    '请严格按照JSON格式返回，每个句子一个对象：\n'
-    '[\n'
-    '   {"text": "生成的句子1"},\n'
-    '   {"text": "生成的句子2"},\n'
-    '   ...\n'
-    ']\n\n'
-    '# 现在请开始生成:'
-)
-
-system_instruction_aug = (
-    "你是一个专业的AI数据增强引擎，专门模拟自动语音识别（ASR）系统在识别中文口语时可能产生的各种错误。"
-    "你的任务是接收一句完美的、无错误的指令文本，并为其生成多个带有真实感的、不同类型错误的增强版本。"
-)
-
-user_instruction_aug = (
-    "# 原始指令\n"
-    "“{original_command}”\n\n"
-    "# 任务要求\n"
-    "请基于上述的“原始指令”，生成3条模拟ASR识别错误的增强数据，并以JSON格式返回。\n\n"
-    "# 错误模拟类型 (请在生成的结果中综合体现以下至少3种错误类型):\n"
-    "1.  **同音或近音字替换:** 将词语替换为发音相同或相似的词。 (例如: “向” -> “像”, “再” -> “在”, “一点” -> “有点”)\n"
-    "2.  **词语的错误合并或拆分:** 在不该有空格的地方加入空格，或者错误地将词连接在一起。 (例如: “往右边” -> “往右 边”, “高一些” -> “高一 些”)\n"
-    "3.  **增加或删减口语化的词:** 随机增加一些无意义的语气词、叹词，或删减掉一些不影响核心意思的词。 (例如: “向右” -> “啊向右”, “转一下” -> “转”)\n"
-    "4.  **模拟重复或结巴:** 模仿人说话时可能出现的重复。 (例如: “向...向右”, “再再再往左一点”)\n"
-    "5.  **轻微的语序错误或语法不通:** 生成轻微不通顺但仍能理解其核心意图的句子。 (例如: “向右转一点” -> “转一点向右”)\n\n"
-    "# 重要约束\n"
-    "- **保持核心意图:** 生成的错误版本绝对不能改变原始指令的核心意图。\n"
-    "- **追求真实感:** 错误应该看起来像是机器听错的结果，而不是随机的乱码。\n"
-    "- **保证多样性:** 生成的3条数据应尽可能体现不同类型的错误组合，避免单一化。\n\n"
-    "# 格式要求\n"
-    "[\n"
-    '   {{"augmented_text": "生成的带错版本1"}},\n'
-    '   {{"augmented_text": "生成的带错版本2"}},\n'
-    "   ...\n"
-    "]\n\n"
-    "# 现在请开始生成:"
-)
 
 example_instructions = {
     "translate_up": {
@@ -133,3 +64,27 @@ example_instructions = {
     }
 }
 
+
+def load_prompt_template(file_name):
+    with open(os.path.join("./prompt/system", file_name), "r", encoding="utf-8") as f:
+        system_prompt = f.read()
+    
+    with open(os.path.join("./prompt/user", file_name), "r", encoding="utf-8") as f:
+        user_prompt = f.read()
+    
+    return system_prompt, user_prompt
+
+
+system_instruction, user_instruction =load_prompt_template('instruction.txt')
+system_oos, user_oos = load_prompt_template('oos.txt')
+system_speech, user_speech = load_prompt_template('speech_aug.txt')
+system_inv, user_inv = load_prompt_template('inv_aug.txt')
+system_compound, user_compound = load_prompt_template('compound_aug.txt')
+system_adv, user_adv = load_prompt_template('adv_aug.txt')
+system_imp, user_imp = load_prompt_template('imp_aug.txt')
+
+system_structured, user_structured = load_prompt_template('structured.txt')
+
+
+system_gen, user_gen = load_prompt_template('model.txt')
+system_annotation, user_annotation = load_prompt_template('model_annotation.txt')

@@ -1,0 +1,12 @@
+{
+    "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
+    "mode": "annotation",
+    "data_path": "./data/annotation.jsonl",
+    "seed": 42,
+    "lr": 0.0002,
+    "n_epochs": 3,
+    "batch_size": 4,
+    "gradient_accumulation_steps": 1,
+    "log_path": null,
+    "output_path": "./checkpoints/generative_annotation"
+}

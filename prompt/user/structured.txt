@@ -1,0 +1,52 @@
+请根据以下范例，为我标注一系列新的数据。
+
+---
+**【范例1】**
+**输入:**
+{{"action": "translate_up", "text": "再往上走走"}}
+
+**输出:**
+{{
+  "cot": "'再往上走走'表达了向上的意图，所以action是translate_up。指令中没有明确的强度词，属于常规表达，因此degree是moderate。",
+  "annotation": {{
+    "action": "translate_up",
+    "degree": "moderate",
+    "text": "再往上走走"
+  }}
+}}
+---
+**【范例2】**
+**输入:**
+{{"action": "move_backward", "text": "感觉快怼到脸上了，退一步海阔天空。"}}
+
+**输出:**
+{{
+  "cot": "用户使用了比喻'快怼到脸上了'和'退一步海阔天空'，这强烈地表达了距离太近、需要显著拉远画面的意图。因此，action是move_backward，degree是strong。",
+  "annotation": {{
+    "action": "move_backward",
+    "degree": "strong",
+    "text": "感觉快怼到脸上了，退一步海阔天空。"
+  }}
+}}
+---
+**【范例3】**
+**输入:**
+{{"action": "translate_right", "text": "往右边挪一丢丢"}}
+
+**输出:**
+{{
+  "cot": "用户指令'往右边挪一丢丢'明确了方向是向右，所以action是translate_right。关键词'一丢丢'表示这是一个非常轻微的调整，因此degree是slight。",
+  "annotation": {{
+    "action": "translate_right",
+    "degree": "slight",
+    "text": "往右边挪一丢丢"
+  }}
+}}
+---
+
+# 现在请标注以下新数据
+
+**输入:**
+{inst_list}
+
+**输出:**
